@@ -1,0 +1,30 @@
+:root {
+  --sprout-green: #4caf50;
+  --bg-white: #f9fbf9;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-white);
+}
+
+a {
+  text-decoration: none;
+}
+
+.page-container {
+  max-width: 1200px; 
+  margin: 0 auto;    
+  padding: 40px 20px;
+  min-height: 80vh; 
+}
+
+.btn-main {
+  background-color: var(--sprout-green);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 30px;
+  cursor: pointer;
+}
