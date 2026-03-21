@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
-import { auth, db } from "../config/firebase";
+import { db } from "../config/firebase";
 
 export default function DailyQuoteCard({ uid }) {
   const [quote, setQuote] = useState("");
@@ -13,13 +13,10 @@ export default function DailyQuoteCard({ uid }) {
         setLoading(true);
         setError("");
 
-        
-
         const today = new Date().toISOString().slice(0, 10);
         const quoteRef = doc(db, "users", uid, "dailyQuotes", today);
-        const quoteSnap = await getDoc(quoteRef);
 
-        
+        const quoteSnap = await getDoc(quoteRef);
 
         if (quoteSnap.exists()) {
           setQuote(quoteSnap.data().advice);
@@ -37,13 +34,11 @@ export default function DailyQuoteCard({ uid }) {
         const data = await response.json();
         const advice = data.slip.advice;
 
-        await setDoc(quoteRef, { 
-            date: today,
-            advice,
-            createdAt: serverTimestamp()
+        await setDoc(quoteRef, {
+          date: today,
+          advice,
+          createdAt: serverTimestamp(),
         });
-
- 
 
         setQuote(advice);
       } catch (err) {
@@ -59,28 +54,23 @@ export default function DailyQuoteCard({ uid }) {
     }
   }, [uid]);
 
-    if (loading) return <div>Loading daily motivation. . .</div>;
-    if (error) return <div>{error}</div>;
+  if (loading) return <div>Loading daily motivation...</div>;
+  if (error) return <div>{error}</div>;
 
-    return (
-        <div
-            style={{
-                padding: "20px",
-                borderRadius: "16px",
-                background: "#f4fff4",
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
-                marginTop: "20px",
-            }}
-        >
-            <h2 style={{ marginBottom: "10px", color: "#2d5a27" }}>Daily Motivation</h2>
-            <p style={{ fontSize: "18px", lineHeight: "1.5" }}>"{quote}"</p>
-        </div>
-    );
-
-
+  return (
+    <div
+      style={{
+        padding: "20px",
+        borderRadius: "16px",
+        background: "#f4fff4",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+        marginTop: "20px",
+      }}
+    >
+      <h2 style={{ marginBottom: "10px", color: "#2d5a27" }}>
+        Daily Motivation
+      </h2>
+      <p style={{ fontSize: "18px", lineHeight: "1.5" }}>"{quote}"</p>
+    </div>
+  );
 }
-
-
-
-            
-        
