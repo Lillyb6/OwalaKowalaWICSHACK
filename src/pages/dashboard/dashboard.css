@@ -15,12 +15,41 @@ body {
     padding: 20px;
     background-color: rgb(255, 245, 238);
 }
-.quote-card {
-    width: 100%;
-    max-width: 600px;
+
+.bottom-boxes {
+    display: flex;
+    justify-content: center;
+    gap: 70px;
+    margin-top: 30px; 
+    width: 90%;
+}
+
+.streak-container, .plants-container {
+    flex: 1;
+    background-color: rgb(76, 149, 108);
     padding: 20px;
     border-radius: 15px;
     text-align: center;
-    margin-top: 20px;
+    border: 3px solid rgb(44, 110, 73);
+    border-radius: 15px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    min-height: 150px;
+    color: rgb(255,226,226);
+}
+
+.habits-btn, .plants-btn {
+    font-family: 'Poppins', sans-serif;
+    background-color: rgb(44, 110, 73);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.habits-btn:hover, .plants-btn:hover {
+    background-color: rgb(255,226,226);
+    color: rgb(44, 110, 73);
 }
