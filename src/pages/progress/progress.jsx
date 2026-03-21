@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { auth } from '../../config/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import WHO5Form from '../../components/WHO5Form';
-
+import WHO5Chart from '../../components/WHO5Chart';
 const Progress = () => {
   const [user, setUser] = useState(undefined);
 
@@ -26,7 +26,10 @@ const Progress = () => {
       <h1>Progress Page</h1>
 
       {user ? (
-        <WHO5Form />
+        <>
+          <WHO5Form />
+          <WHO5Chart />
+        </>
       ) : (
         <p>Please log in to view your progress.</p>
       )}
