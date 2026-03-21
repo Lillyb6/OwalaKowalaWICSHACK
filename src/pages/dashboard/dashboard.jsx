@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { auth } from '../../config/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import DailyQuoteCard from '../../components/DailyQuoteCard';
+import './dashboard.css';
 
 const Dashboard = () => {
   const [user, setUser] = useState(undefined);
@@ -23,7 +24,6 @@ const Dashboard = () => {
 
   return (
     <div className="page-container">
-      <h1>Dashboard Page</h1>
 
       {user ? (
         <DailyQuoteCard uid={user.uid} />
