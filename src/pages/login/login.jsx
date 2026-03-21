@@ -7,6 +7,8 @@ import {
   onAuthStateChanged 
 } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import logoIcon from '../../assets/sprout-icon.png';
+import './login.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -48,33 +50,36 @@ const Login = () => {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
-      <div style={{ padding: '40px', border: '1px solid #ddd', borderRadius: '15px', width: '350px', textAlign: 'center', background: 'white' }}>
-        <h2 style={{ color: '#2d5a27' }}>Sprout Login</h2>
+    <div className="login-page">
+      <div className="login-card">
+        <h2 className="login-title">
+          Login to <span className="sprout-name">Sprout</span>
+          <img src={logoIcon} alt=" " className="sprout-logo"/>
+          </h2>
         
-        <button onClick={handleGoogleLogin} style={googleButtonStyle}>
+        <button className="google-btn" onClick={handleGoogleLogin}>
           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G" width="18px"/>
           Continue with Google
         </button>
 
-        <div style={{ margin: '15px 0', color: '#888', fontSize: '0.8rem' }}>OR</div>
+        <div className="login-divider">OR</div>
 
         <form onSubmit={handleEmailAuth}>
           <input 
             type="email" 
             placeholder="Email" 
+            className="login-username"
             onChange={(e) => setEmail(e.target.value)} 
-            style={inputStyle} 
             required
           />
           <input 
             type="password" 
             placeholder="Password" 
-            onChange={(e) => setPassword(e.target.value)} 
-            style={inputStyle} 
+            className="login-password"
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button type="submit" style={submitButtonStyle}>
+          <button type="submit" className="btn-main">
             Login
           </button>
         </form>
