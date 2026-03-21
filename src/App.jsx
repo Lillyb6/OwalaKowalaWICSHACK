@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/navbar';
 
-// Page Imports
 import Landing from './pages/landing/landing';
 import Login from './pages/login/login';
 import Dashboard from './pages/dashboard/dashboard';

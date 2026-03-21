@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { auth } from '../config/firebase'; 
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import logoIcon from '../assets/sprout-icon.png';
+import logoIcon from '../assets/sprout-icon.png';
 
 const Navbar = () => {
   const [user, setUser] = useState(null);
@@ -32,6 +33,16 @@ const Navbar = () => {
       setIsSidebarOpen(!isSidebarOpen);
     }
   };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      if (!currentUser) setIsSidebarOpen(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  
 
   const navStyle = {
     display: 'flex', 
