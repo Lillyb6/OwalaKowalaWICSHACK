@@ -62,12 +62,16 @@ export default function DailyQuoteCard({ uid }) {
       style={{
         padding: "20px",
         borderRadius: "16px",
-        background: "#f4fff4",
+        background: "rgb(255,226,226)",
         boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
         marginTop: "20px",
+        textAlign: "center",
+        boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+        border: "3px solid rgb(255,179,179)",
+        borderRadius: "15px"
       }}
     >
-      <h2 style={{ marginBottom: "10px", color: "#2d5a27" }}>
+      <h2 style={{ marginBottom: "10px", color: "rgb(44, 110, 73)" }}>
         Daily Motivation
       </h2>
       <p style={{ fontSize: "18px", lineHeight: "1.5" }}>"{quote}"</p>
