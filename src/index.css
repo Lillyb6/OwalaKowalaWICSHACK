@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --sprout-green: #4caf50;
   --bg-white: #f9fbf9;
