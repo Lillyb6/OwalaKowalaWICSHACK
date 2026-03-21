@@ -116,7 +116,7 @@ const Navbar = () => {
             marginLeft: '8px',
             fontWeight: 600 
           }}>
-           sprouts.com
+           sprout.com
           </span>
         </div>
 
@@ -148,6 +148,7 @@ const Navbar = () => {
         <NavLink to="/tasks" style={sideLinkStyle} onClick={toggleSidebar}>Tasks</NavLink>
         <NavLink to="/plant" style={sideLinkStyle} onClick={toggleSidebar}>Plant Health</NavLink>
         <NavLink to="/garden" style={sideLinkStyle} onClick={toggleSidebar}>Garden Map</NavLink>
+        <NavLink to="/checkin" style={sideLinkStyle} onClick={toggleSidebar}>Check-In</NavLink>
         <NavLink to="/progress" style={sideLinkStyle} onClick={toggleSidebar}>Progress</NavLink>
         
         <hr style={{ border: '0.5px solid #eee', margin: '10px 0' }} />

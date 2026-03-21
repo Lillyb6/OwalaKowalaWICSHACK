@@ -63,6 +63,7 @@ export default function WHO5Chart() {
       }}
     >
       <h2>WHO-5 Progress Chart</h2>
+
       <div style={{ width: "100%", height: 300 }}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData}>

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { auth } from "../../config/firebase";
+import { auth } from "../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import WHO5Chart from "../../components/WHO5Chart";
+import WHO5Form from "../components/WHO5Form";
 
-const Progress = () => {
+const Checkin = () => {
   const [user, setUser] = useState(undefined);
 
   useEffect(() => {
@@ -23,10 +23,15 @@ const Progress = () => {
 
   return (
     <div className="page-container">
-      <h1>Progress Page</h1>
-      {user ? <WHO5Chart /> : <p>Please log in to view your progress.</p>}
+      <h1>Daily Check-In</h1>
+
+      {user ? (
+        <WHO5Form />
+      ) : (
+        <p>Please log in to complete your check-in.</p>
+      )}
     </div>
   );
 };
 
-export default Progress;
+export default Checkin;

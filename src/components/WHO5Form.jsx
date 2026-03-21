@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { auth, db } from "../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 const questions = [
   "I have felt cheerful and in good spirits",
@@ -14,8 +15,8 @@ const questions = [
 const options = [
   { value: 5, label: "All of the time" },
   { value: 4, label: "Most of the time" },
-  { value: 3, label: "More than half the time" },
-  { value: 2, label: "Less than half the time" },
+  { value: 3, label: "More than half of the time" },
+  { value: 2, label: "Less than half of the time" },
   { value: 1, label: "Some of the time" },
   { value: 0, label: "At no time" },
 ];
@@ -25,6 +26,8 @@ export default function WHO5Form() {
   const [answers, setAnswers] = useState([null, null, null, null, null]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [showProgressButton, setShowProgressButton] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -51,18 +54,19 @@ export default function WHO5Form() {
     e.preventDefault();
 
     if (!user) {
-      setMessage("Please log in first");
+      setMessage("Please log in first.");
       return;
     }
 
     if (!allAnswered) {
-      setMessage("Please answer all 5 questions");
+      setMessage("Please answer all 5 questions.");
       return;
     }
 
     try {
       setLoading(true);
       setMessage("");
+      setShowProgressButton(false);
 
       const today = new Date().toISOString().slice(0, 10);
 
@@ -74,7 +78,8 @@ export default function WHO5Form() {
         createdAt: serverTimestamp(),
       });
 
-      setMessage("WHO-5 score saved successfully!");
+      setMessage("WHO-5 score saved successfully.");
+      setShowProgressButton(true);
     } catch (err) {
       console.error("Error saving WHO-5 score:", err);
       setMessage("Failed to save score. Please try again.");
@@ -156,6 +161,21 @@ export default function WHO5Form() {
       )}
 
       {message && <p style={{ marginTop: "16px" }}>{message}</p>}
+
+      {showProgressButton && (
+        <button
+          onClick={() => navigate("/progress")}
+          style={{
+            marginTop: "16px",
+            padding: "12px 20px",
+            borderRadius: "10px",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          View Progress Chart
+        </button>
+      )}
     </div>
   );
-}          
+}
