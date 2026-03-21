@@ -1,12 +1,23 @@
 import React from 'react';
+import './plants.css';
 
-const Plants = () => {
-  return (
-    <div className="page-container">
-      <h1>Plants Page</h1>
-      <p>TBA</p>
-    </div>
+const PlantGrowth = ({ growthStage })
+return (
+  <div className="plants-container">
+    <img
+      src={`/images/plant-stage-${growthStage}.png`}
+      className="plant-image"
+      alt="Your growing plant"
+    />
+
+    <img
+      src="/images/dirt-mound.png"
+      className="dirt-mound"
+      alt="Soil for planting"
+      />
+
+    <div className="grass-floor"></div>
+  </div>
   );
-};
 
 export default Plants;
