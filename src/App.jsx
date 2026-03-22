@@ -10,6 +10,8 @@ import Plants from './pages/plants/plants';
 import Garden from './pages/garden/garden';
 import Progress from './pages/progress/progress';
 import Profile from './pages/profile/profile';
+import Checkin from './pages/checkin';
+
 
 function App() {
   return (
@@ -23,6 +25,7 @@ function App() {
         <Route path="/plant" element={<Plants />} />
         <Route path="/garden" element={<Garden />} />
         <Route path="/progress" element={<Progress />} />
+        <Route path="/checkin" element={<Checkin />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
     </Router>
