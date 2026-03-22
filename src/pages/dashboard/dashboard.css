@@ -14,28 +14,39 @@ body {
     min-height: 100vh;
     padding: 20px;
     background-color: rgb(255, 245, 238);
+    position: relative;
 }
 
 .bottom-boxes {
     display: flex;
     justify-content: center;
-    gap: 70px;
-    margin-top: 30px; 
-    width: 90%;
+    gap: 50px;
+    margin-top: 30px;
+    width: 100%;
+    max-width: 950px;
 }
 
-.streak-container, .plants-container {
-    flex: 1;
-    background-color: rgb(76, 149, 108);
-    padding: 20px;
-    border-radius: 15px;
-    text-align: center;
-    border: 3px solid rgb(44, 110, 73);
-    border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    min-height: 150px;
+.bottom-boxes h2 {
     color: rgb(255,226,226);
 }
+
+.left-container, .right-container {
+    flex: 1;
+    background-color: rgb(76, 149, 108);
+    color: white;
+    text-align: center;
+    padding: 20px;
+    min-height: 150px;
+    border: 3px solid rgb(44, 110, 73);
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
 
 .habits-btn, .plants-btn{
     font-family: 'Poppins', sans-serif;

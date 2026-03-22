@@ -27,6 +27,7 @@ const Dashboard = () => {
     <div className="page-container">
       {user ? (
         <>
+
           <DailyQuoteCard uid={user.uid} />
 
           <div className="bottom-boxes">
@@ -43,6 +44,7 @@ const Dashboard = () => {
                 view your plant
               </button>
             </div>
+
           </div>
         </>
       ) : (
