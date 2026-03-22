@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { auth } from '../../config/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import DailyQuoteCard from '../../components/DailyQuoteCard';
+import './dashboard.css';
 
 const Dashboard = () => {
   const [user, setUser] = useState(undefined);
@@ -23,10 +24,27 @@ const Dashboard = () => {
 
   return (
     <div className="page-container">
-      <h1>Dashboard Page</h1>
 
       {user ? (
+        <>
         <DailyQuoteCard uid={user.uid} />
+
+        <div className="bottom-boxes">
+          <div className="streak-container">
+            <h2>Your Streaks</h2>
+            <button className="habits-btn">
+              view your habits
+            </button>
+          </div>
+
+          <div className="plants-container">
+            <h2>Your Plants</h2>
+            <button className="plants-btn">
+              view your plant
+            </button>
+          </div>
+        </div>
+        </>
       ) : (
         <p>Please log in to view your daily quote.</p>
       )}
