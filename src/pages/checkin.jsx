@@ -23,7 +23,7 @@ const Checkin = () => {
 
   return (
     <div className="page-container">
-      <h1>Daily Check-In</h1>
+      <h1 style={{color: "rgb(44, 110, 73)"}}>Daily Check-In</h1>
 
       {user ? (
         <WHO5Form />

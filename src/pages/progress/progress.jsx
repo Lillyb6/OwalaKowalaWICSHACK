@@ -23,7 +23,7 @@ const Progress = () => {
 
   return (
     <div className="page-container">
-      <h1>Progress Page</h1>
+      <h1 style={{color: "rgb(44, 110, 73)"}}>Progress Page</h1>
       {user ? <WHO5Chart /> : <p>Please log in to view your progress.</p>}
     </div>
   );
