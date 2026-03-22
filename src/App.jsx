@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/navbar';
-
 import Landing from './pages/landing/landing';
 import Login from './pages/login/login';
 import Dashboard from './pages/dashboard/dashboard';
@@ -11,22 +10,25 @@ import Garden from './pages/garden/garden';
 import Progress from './pages/progress/progress';
 import Profile from './pages/profile/profile';
 import Checkin from './pages/checkin';
-
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
     <Router>
-      <Navbar /> 
+      <Navbar />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/tasks" element={<Tasks />} />
-        <Route path="/plant" element={<Plants />} />
-        <Route path="/garden" element={<Garden />} />
-        <Route path="/progress" element={<Progress />} />
-        <Route path="/checkin" element={<Checkin />} />
-        <Route path="/profile" element={<Profile />} />
+
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/tasks" element={<Tasks />} />
+          <Route path="/plant" element={<Plants />} />
+          <Route path="/garden" element={<Garden />} />
+          <Route path="/progress" element={<Progress />} />
+          <Route path="/checkin" element={<Checkin />} />
+          <Route path="/profile" element={<Profile />} />
+        </Route>
       </Routes>
     </Router>
   );

@@ -1,12 +1,29 @@
-import React, { useState } from 'react';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import React, { useState, useEffect } from 'react';
 import { auth, db } from '../../config/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 import '../../index.css'; 
 import './tasks.css';  
+import {
+  collection,
+  addDoc,
+  setDoc,
+  getDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  query,
+  where,
+  orderBy,
+  serverTimestamp
+}from 'firebase/firestore';
 
 const MoodApp = () => {
   const [selectedMood, setSelectedMood] = useState(null);
   const [completedTasks, setCompletedTasks] = useState([]);
+  const [journalText, setJournalText] = useState('');
+  const [journalEntries, setJournalEntries] = useState([]);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState('');
 
   const moodData = {
     happy: ["Do something you love", "Write down a goal", "Dance to a song"],
@@ -23,6 +40,78 @@ const MoodApp = () => {
     { name: 'angry', src: '/images/angry_face.png' },
     { name: 'fine', src: '/images/fine_face.png' }
   ];
+
+  const fetchJournalEntries = async (user) => {
+    if (!user) return;
+    try {
+      const journalRef = collection(db, 'journalEntries');
+      const q = query(
+        journalRef,
+        where('userId', '==', user.uid),
+        orderBy('createdAt', 'desc')
+      );
+      const snapshot = await getDocs(q);
+      const entries = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setJournalEntries(entries);
+    } catch (err) {
+      console.error('Error fetching journal entries:', err);
+    }
+  };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        fetchJournalEntries(user);
+      } else {
+        setJournalEntries([]);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const saveJournalEntry = async () => {
+    const user = auth?.currentUser;
+
+    if (!user) {
+      setSaveMessage('⚠️ You must be signed in to save entries.');
+      setTimeout(() => setSaveMessage(''), 3000);
+      return;
+    }
+
+    if (!journalText.trim()) {
+      setSaveMessage('⚠️ Write something before saving!');
+      setTimeout(() => setSaveMessage(''), 3000);
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      await addDoc(collection(db, 'journalEntries'), {
+        userId: user.uid,
+        text: journalText.trim(),
+        mood: selectedMood || null,
+        createdAt: serverTimestamp(),
+      });
+      setJournalText('');
+      setSaveMessage('✓ Entry saved!');
+      await fetchJournalEntries(user);
+    } catch (err) {
+      console.error('Error saving journal entry:', err);
+      setSaveMessage('✗ Failed to save. Try again.');
+    } finally {
+      setIsSaving(false);
+      setTimeout(() => setSaveMessage(''), 3000);
+    }
+  };
+
+  const deleteJournalEntry = async (id) => {
+    try {
+      await deleteDoc(doc(db, 'journalEntries', id));
+      setJournalEntries((prev) => prev.filter((e) => e.id !== id));
+    } catch (err) {
+      console.error('Error deleting journal entry:', err);
+    }
+  };
 
   const getRandomColor = () => {
     const colors = ['#ff9898', '#ffb56c', '#ffde79', '#7fff7f', '#6fb2ff', '#b07ae2', '#ff78c1'];
@@ -75,7 +164,6 @@ const MoodApp = () => {
       if (nextStage >= 6) {
         console.log('Plant fully grown! Moving to garden...');
 
-        // Save completed plant to garden collection
         const gardenRef = doc(db, 'garden', user.uid);
         const gardenSnap = await getDoc(gardenRef);
         const existing = gardenSnap.exists() ? gardenSnap.data().plants || [] : [];
@@ -83,7 +171,6 @@ const MoodApp = () => {
           plants: [...existing, { flowerType, potColor, grownAt: new Date() }]
         });
 
-        // Reset plant back to stage 1 for next plant
         await setDoc(plantRef, {
           stage: 1,
           flowerType: 'rose',
@@ -195,22 +282,61 @@ const MoodApp = () => {
       )}
 
       <section className="w-full max-w-xl bg-white rounded-[2rem] shadow-lg border border-[#ffe2e2] p-8 mt-10">
-        <h2 className="text-xl font-semibold text-[#d96c6c] mb-4">
-          Journal
-        </h2>
+        <h2 className="text-xl font-semibold text-[#d96c6c] mb-4">Journal</h2>
 
-        <textarea 
-          className="w-full h-36 p-5 bg-[#fff5f5] border border-[#ffcccc] rounded-2xl 
-          focus:ring-2 focus:ring-[#ffb3b3] focus:border-[#ffb3b3] outline-none 
-          text-slate-700 resize-none placeholder:text-slate-400 transition-all" 
+        <textarea
+          value={journalText}
+          onChange={(e) => setJournalText(e.target.value)}
+          className="w-full h-36 p-5 bg-[#fff5f5] border border-[#ffcccc] rounded-2xl focus:ring-2 focus:ring-[#ffb3b3] focus:border-[#ffb3b3] outline-none text-slate-700 resize-none placeholder:text-slate-400 transition-all"
           placeholder="What's on your mind?"
         />
 
-        <button className="mt-5 w-full bg-[#ffe2e2] hover:bg-[#ffb3b3] text-[#d96c6c] hover:text-white py-3 rounded-2xl transition-all font-semibold">
-          Save Entry 
+        {saveMessage && (
+          <p className="mt-2 text-sm text-center text-[#d96c6c]">{saveMessage}</p>
+        )}
+
+        <button
+          onClick={saveJournalEntry}
+          disabled={isSaving}
+          className="mt-4 w-full bg-[#ffe2e2] hover:bg-[#ffb3b3] text-[#d96c6c] hover:text-white py-3 rounded-2xl transition-all font-semibold disabled:opacity-50"
+        >
+          {isSaving ? 'Saving...' : 'Save Entry'}
         </button>
       </section>
-
+      {journalEntries.length > 0 && (
+        <section className="w-full max-w-xl bg-white rounded-[2rem] shadow-lg border border-[#ffe2e2] p-8 mt-6 mb-10">
+          <h2 className="text-xl font-semibold text-[#d96c6c] mb-4">Past Entries</h2>
+          <ul className="space-y-4">
+            {journalEntries.map((entry) => (
+              <li key={entry.id} className="bg-[#fff5f5] border border-[#ffcccc] rounded-2xl p-4">
+                <div className="flex justify-between items-center mb-1">
+                  <div className="flex items-center gap-3">
+                    {entry.mood && (
+                      <span className="text-xs font-semibold uppercase tracking-widest text-[#f2a4a4] capitalize">
+                        {entry.mood}
+                      </span>
+                    )}
+                    {entry.createdAt?.toDate && (
+                      <span className="text-xs text-slate-400">
+                        {entry.createdAt.toDate().toLocaleDateString(undefined, {
+                          month: 'short', day: 'numeric', year: 'numeric',
+                        })}
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => deleteJournalEntry(entry.id)}
+                    className="text-xs text-[#ffb3b3] hover:text-[#d96c6c] transition-colors"
+                  >
+                    delete
+                  </button>
+                </div>
+                <p className="text-slate-600 text-sm leading-relaxed">{entry.text}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
   );
 };
