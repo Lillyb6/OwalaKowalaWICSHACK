@@ -3,11 +3,17 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { auth } from '../config/firebase'; 
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import logoIcon from '../assets/sprout-icon.png';
+import ProgressBar from './progressbar';
 
 const Navbar = () => {
   const [user, setUser] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
+  const userProgress = {
+    level: 12,
+    xp: 75,
+    color: '#4ade80' 
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -152,7 +158,13 @@ const Navbar = () => {
         >
           ✕
         </button>
-        
+        <div className="px-2 mb-6">
+          <div className="flex justify-between items-end">
+            <span className="text-[#2d5a27] font-bold text-lg">Level {userProgress.level}</span>
+            <span className="text-[10px] text-gray-400 uppercase tracking-wider">EXP to next level</span>
+          </div>
+          <ProgressBar bgcolor={userProgress.color} completed={userProgress.xp} />
+        </div>
         <h3 style={{ color: '#2d5a27', marginBottom: '10px' }}>Account Menu</h3>
         <NavLink to="/dashboard" style={sideLinkStyle} onClick={toggleSidebar}>Dashboard</NavLink>
         <NavLink to="/tasks" style={sideLinkStyle} onClick={toggleSidebar}>Tasks</NavLink>
