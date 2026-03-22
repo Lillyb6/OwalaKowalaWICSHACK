@@ -3,6 +3,7 @@ import { auth, db } from "../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import { updateUserStreak } from "../utils/updateStreak";
 
 const questions = [
   "I have felt cheerful and in good spirits",
@@ -77,6 +78,8 @@ export default function WHO5Form() {
         percentScore,
         createdAt: serverTimestamp(),
       });
+
+      await updateUserStreak(user.uid);
 
       setMessage("WHO-5 score saved successfully.");
       setShowProgressButton(true);
