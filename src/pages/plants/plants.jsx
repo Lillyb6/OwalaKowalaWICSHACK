@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../../config/firebase';
 import './plants.css';
 
 const Plants = () => {
@@ -6,16 +8,56 @@ const Plants = () => {
   const [flowerType, setFlowerType] = useState('rose');
   const [potColor, setPotColor] = useState('pink');
 
+  // Load saved state from Firestore on mount
+  useEffect(() => {
+    const loadPlant = async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+      const ref = doc(db, 'plants', user.uid);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        const data = snap.data();
+        setStage(data.stage || 1);
+        setFlowerType(data.flowerType || 'rose');
+        setPotColor(data.potColor || 'pink');
+      }
+    };
+    loadPlant();
+  }, []);
+
+  const savePlant = async (newStage, newFlowerType, newPotColor) => {
+    const user = auth.currentUser;
+    if (!user) return;
+    await setDoc(doc(db, 'plants', user.uid), {
+      stage: newStage,
+      flowerType: newFlowerType,
+      potColor: newPotColor,
+      updatedAt: new Date()
+    });
+  };
+
+  const handleReset = async () => {
+    setStage(1);
+    await savePlant(1, flowerType, potColor);
+  };
+
+  const handleFlowerType = async (type) => {
+    setFlowerType(type);
+    await savePlant(stage, type, potColor);
+  };
+
+  const handlePotColor = async (color) => {
+    setPotColor(color);
+    await savePlant(stage, flowerType, color);
+  };
+
   const getMarginLeft = () => {
     if (flowerType === 'sunflower') {
-      if (stage === 1) 
-      {
-        return'260px';
-      }
-      else if (stage === 3) {
+      if (stage === 1) {
+        return '260px';
+      } else if (stage === 3) {
         return '75px';
-      }
-      else {
+      } else {
         return '30px';
       }
     } else {
@@ -56,16 +98,11 @@ const Plants = () => {
             position: 'absolute', 
             bottom: '-38px', 
             width: '1000px',  
-            
             zIndex: 4,      
-            
             left: '50%', 
             transform: 'translateX(-50%)',
-            
             marginLeft: getMarginLeft(),
-
             transformOrigin: 'bottom',
-      
             transition: 'bottom 0.5s ease-in-out' 
           }}
           alt="growing plant"
@@ -96,15 +133,14 @@ const Plants = () => {
         backdropFilter: 'blur(10px)',
         boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
       }}>
-        <button className="btn" onClick={() => setStage(s => Math.min(6, s + 1))}>Grow</button>
-        <button className="btn" onClick={() => setStage(1)}>Reset</button>
+        <button className="btn" onClick={handleReset}>Reset</button>
         <div style={{ width: '2px', background: '#ddd', margin: '0 10px' }} />
-        <button className="btn" onClick={() => setFlowerType('rose')}>Rose</button>
-        <button className="btn" onClick={() => setFlowerType('sunflower')}>Sunflower</button>
-        <button className="btn" onClick={() => setFlowerType('lotus')}>Lotus</button>
+        <button className="btn" onClick={() => handleFlowerType('rose')}>Rose</button>
+        <button className="btn" onClick={() => handleFlowerType('sunflower')}>Sunflower</button>
+        <button className="btn" onClick={() => handleFlowerType('lotus')}>Lotus</button>
         <div style={{ width: '2px', background: '#ddd', margin: '0 10px' }} />
-        <button className="btn" style={{color: 'hotpink'}} onClick={() => setPotColor('pink')}>Pink Pot</button>
-        <button className="btn" style={{color: 'purple'}} onClick={() => setPotColor('purple')}>Purple Pot</button>
+        <button className="btn" style={{color: 'hotpink'}} onClick={() => handlePotColor('pink')}>Pink Pot</button>
+        <button className="btn" style={{color: 'purple'}} onClick={() => handlePotColor('purple')}>Purple Pot</button>
       </div>
     </div>
   );

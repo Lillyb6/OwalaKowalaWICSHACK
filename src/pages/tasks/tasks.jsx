@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { auth, db } from '../../config/firebase';
+import '../../index.css'; 
+import './tasks.css';  
 
 const MoodApp = () => {
   const [selectedMood, setSelectedMood] = useState(null);
   const [completedTasks, setCompletedTasks] = useState([]);
 
   const moodData = {
-    happy: ["Text someone you love", "Write down a goal", "Dance to a song"],
-    anxious: ["4-7-8 Breathing", "5-4-3-2-1 Grounding", "Drink cold water"],
-    sad: ["Wrap in a blanket", "Brain dump journal", "Watch a funny clip"],
-    angry: ["10 jumping jacks", "Squeeze a pillow", "High-energy song"],
-    fine: ["Plan a small treat", "Organize a drawer", "Read a few pages"]
+    happy: ["Do something you love", "Write down a goal", "Dance to a song"],
+    anxious: ["4-7-8 Breathing", "Do something creative", "Drink cold water"],
+    sad: ["Wrap in a blanket", "Watch a comfort movie", "Go somewhere new"],
+    angry: ["Go for a run", "Punch a pillow", "High-energy song"],
+    fine: ["Go get a treat", "Organize a drawer", "Read a book"]
   };
 
   const moods = [
@@ -20,93 +24,189 @@ const MoodApp = () => {
     { name: 'fine', src: '/images/fine_face.png' }
   ];
 
+  const getRandomColor = () => {
+    const colors = ['#ff9898', '#ffb56c', '#ffde79', '#7fff7f', '#6fb2ff', '#b07ae2', '#ff78c1'];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
+
+  const triggerConfetti = (e) => {
+    const confettiContainer = document.getElementById('confetti-container');
+    const taskButtonPosition = e?.target?.getBoundingClientRect?.() ?? { left: window.innerWidth / 2, top: window.innerHeight / 2, width: 0, height: 0 };
+
+    for (let i = 0; i < 30; i++) {
+      const confettiPiece = document.createElement('div');
+      confettiPiece.classList.add('confetti');
+
+      confettiPiece.style.left = `${taskButtonPosition.left + Math.random() * taskButtonPosition.width}px`;
+      confettiPiece.style.top = `${taskButtonPosition.top + Math.random() * taskButtonPosition.height}px`;
+
+      const randomX = (Math.random() * 400 - 200) + "px"; 
+      const randomY = (Math.random() * 400 - 200) + "px"; 
+      confettiPiece.style.setProperty('--random-x', randomX);
+      confettiPiece.style.setProperty('--random-y', randomY);
+
+      confettiPiece.style.backgroundColor = getRandomColor(); 
+
+      confettiContainer.appendChild(confettiPiece);
+    }
+    setTimeout(() => {
+      confettiContainer.innerHTML = '';
+    }, 3000);
+  };
+
+  const handleDone = async (e) => {
+    triggerConfetti(e);
+
+    const user = auth.currentUser;
+    console.log('user:', user);
+
+    if (user) {
+      const plantRef = doc(db, 'plants', user.uid);
+      const snap = await getDoc(plantRef);
+      console.log('plant data:', snap.data());
+
+      const currentStage = snap.exists() ? snap.data().stage || 1 : 1;
+      const flowerType = snap.exists() ? snap.data().flowerType || 'rose' : 'rose';
+      const potColor = snap.exists() ? snap.data().potColor || 'pink' : 'pink';
+
+      const nextStage = currentStage + 1;
+      console.log('currentStage:', currentStage, '→ nextStage:', nextStage);
+
+      if (nextStage >= 6) {
+        console.log('Plant fully grown! Moving to garden...');
+
+        // Save completed plant to garden collection
+        const gardenRef = doc(db, 'garden', user.uid);
+        const gardenSnap = await getDoc(gardenRef);
+        const existing = gardenSnap.exists() ? gardenSnap.data().plants || [] : [];
+        await setDoc(gardenRef, {
+          plants: [...existing, { flowerType, potColor, grownAt: new Date() }]
+        });
+
+        // Reset plant back to stage 1 for next plant
+        await setDoc(plantRef, {
+          stage: 1,
+          flowerType: 'rose',
+          potColor: 'pink',
+          updatedAt: new Date()
+        });
+
+        console.log('Garden updated and plant reset to stage 1');
+      } else {
+        await setDoc(plantRef, {
+          stage: nextStage,
+          flowerType,
+          potColor,
+          updatedAt: new Date()
+        });
+
+        console.log('Plant grown to stage:', nextStage);
+      }
+    }
+
+    setSelectedMood(null);
+    setCompletedTasks([]);
+  };
+
   return (
-    <div className="min-h-screen p-8 flex flex-col items-center bg-slate-50 font-sans">
-      
-      {/* 1. MOOD SELECTOR: Only shows if selectedMood is null */}
+    <div className="min-h-screen flex flex-col items-center px-6 py-10 bg-gradient-to-b from-[#ffe2e2] to-white font-sans">
+      <div id="confetti-container" style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 9999 }}></div>
+
       {!selectedMood ? (
-        <section className="w-full max-w-5xl py-20 flex flex-col items-center">
-          <h2 className="text-2xl font-bold text-slate-800 mb-12">How are you feeling today?</h2>
-          
-          <div className="flex flex-row flex-nowrap justify-center items-center gap-6 w-full px-4">
+        <section className="w-full max-w-5xl py-12 flex flex-col items-center bg-white/70 backdrop-blur-md rounded-[2rem] shadow-lg border border-white/40">
+          <h2 className="text-2xl text-center font-semibold text-[#d96c6c] mb-10">
+            How are you feeling today?
+          </h2>
+
+          <div className="flex flex-row flex-nowrap justify-center items-center gap-10 w-full overflow-x-auto pb-4 pt-8">
             {moods.map((mood) => (
               <button 
                 key={mood.name}
                 type="button"
                 onClick={() => setSelectedMood(mood.name)}
-                // Added a light background so the button is visible even if the image fails
-                className="flex-shrink-0 bg-white shadow-sm hover:shadow-md rounded-full p-2 border border-slate-100 transition-all hover:scale-110 active:scale-95"
+                className={`flex-shrink-0 transition-all duration-200 
+                  ${selectedMood === mood.name 
+                    ? "scale-110 drop-shadow-[0_0_10px_#ffb3b3]" 
+                    : "hover:scale-110"} 
+                  active:scale-95 focus:outline-none`}
               >
                 <img 
                   src={mood.src} 
                   alt={mood.name} 
-                  className="w-20 h-20 md:w-28 md:h-28 object-contain pointer-events-none"
-                  onError={(e) => { 
-                    e.target.style.display = 'none';
-                    e.target.parentNode.innerHTML += `<span class="text-[10px] font-bold text-slate-400 capitalize">${mood.name}</span>`;
-                  }} 
+                  className="w-16 h-16 sm:w-20 sm:h-20 object-contain pointer-events-none flower-pop-shadow transform scale-150"
                 />
               </button>
             ))}
           </div>
         </section>
       ) : (
-        /* 2. TASK VIEW: Only shows if a mood is selected */
-        <section className="w-full max-w-xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 p-8 mt-10">
+        <section className="w-full max-w-xl bg-white rounded-[2rem] shadow-xl border border-[#ffe2e2] p-8 mt-10">
           <div className="flex justify-between items-center mb-8">
-            <h3 className="text-xl font-bold text-slate-800 capitalize">
-              {selectedMood} <span className="text-slate-300 font-normal">Checklist</span>
+            <h3 className="text-xl font-semibold text-[#d96c6c] capitalize">
+              {selectedMood} <span className="text-[#f2a4a4] font-normal">Tasks</span>
             </h3>
+
             <button 
               onClick={() => setSelectedMood(null)}
-              className="text-xs font-bold text-slate-400 hover:text-orange-500 uppercase tracking-widest"
+              className="text-xs font-semibold text-[#f2a4a4] hover:text-[#d96c6c] uppercase tracking-widest"
             >
               ← Back
             </button>
           </div>
 
           <ul className="space-y-4 mb-8">
-            {moodData[selectedMood]?.map((task, index) => (
-              <li 
-                key={index} 
-                onClick={() => setCompletedTasks(prev => 
-                    prev.includes(task) ? prev.filter(t => t !== task) : [...prev, task]
-                )}
-                className={`flex items-center gap-4 p-5 rounded-3xl border-2 cursor-pointer transition-all
-                  ${completedTasks.includes(task) ? 'bg-emerald-50 border-emerald-200' : 'bg-slate-50 border-transparent hover:border-orange-100'}`}
-              >
-                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                  completedTasks.includes(task) ? 'bg-emerald-500 border-emerald-500 text-white text-[10px]' : 'bg-white border-slate-300'
-                }`}>
-                  {completedTasks.includes(task) && "✓"}
-                </div>
-                <span className={`font-medium ${completedTasks.includes(task) ? 'line-through text-slate-400' : 'text-slate-700'}`}>
-                  {task}
-                </span>
-              </li>
-            ))}
+            {moodData[selectedMood]?.map((task, index) => {
+              const isDone = completedTasks.includes(task);
+
+              return (
+                <li key={index}>
+                  <button
+                    onClick={(e) => {
+                      const newCompletedTasks = isDone
+                        ? completedTasks.filter(t => t !== task)
+                        : [...completedTasks, task];
+                      setCompletedTasks(newCompletedTasks);
+                      if (!isDone) triggerConfetti(e); 
+                    }}
+                    className="flex items-center gap-4 p-5 rounded-3xl border-2 cursor-pointer transition-all hover:bg-[#ffb3b3] focus:outline-none"
+                  >
+                    <div
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs
+                        ${isDone ? 'bg-[#ffb3b3] text-white' : 'bg-white border-[#ffcaca]'}`}
+                    >
+                      {isDone && "✓"}
+                    </div>
+                    <span className={`${isDone ? 'line-through text-[#d9a5a5]' : 'text-[#5a5a5a]'}`}>
+                      {task}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
           </ul>
 
-          <button 
-            onClick={() => {
-                setSelectedMood(null);
-                setCompletedTasks([]);
-            }}
-            className="w-full bg-slate-900 hover:bg-black text-white py-5 rounded-3xl font-bold text-lg shadow-lg"
+          <button
+            onClick={handleDone}
+            className="w-full bg-[#ffb3b3] hover:bg-[#ff9b9b] text-white py-5 rounded-2xl font-semibold text-lg shadow-xl transition-all"
           >
             DONE
           </button>
         </section>
       )}
 
-      {/* 3. JOURNAL: Always visible */}
-      <section className="w-full max-w-xl bg-white rounded-[2.5rem] shadow-sm border border-slate-200 p-8 mt-10">
-        <h2 className="text-lg font-bold text-slate-800 mb-4">Journal</h2>
+      <section className="w-full max-w-xl bg-white rounded-[2rem] shadow-lg border border-[#ffe2e2] p-8 mt-10">
+        <h2 className="text-xl font-semibold text-[#d96c6c] mb-4">
+          Journal
+        </h2>
+
         <textarea 
-          className="w-full h-32 p-5 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-slate-200 outline-none text-slate-700 resize-none" 
-          placeholder="Thoughts..."
+          className="w-full h-36 p-5 bg-[#fff5f5] border border-[#ffcccc] rounded-2xl 
+          focus:ring-2 focus:ring-[#ffb3b3] focus:border-[#ffb3b3] outline-none 
+          text-slate-700 resize-none placeholder:text-slate-400 transition-all" 
+          placeholder="What's on your mind?"
         />
-        <button className="mt-4 w-full bg-slate-100 hover:bg-slate-200 text-slate-500 py-3 rounded-xl transition-all font-bold text-xs uppercase">
+
+        <button className="mt-5 w-full bg-[#ffe2e2] hover:bg-[#ffb3b3] text-[#d96c6c] hover:text-white py-3 rounded-2xl transition-all font-semibold">
           Save Entry 
         </button>
       </section>
