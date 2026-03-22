@@ -12,7 +12,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth,async (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       
       if (currentUser) {
@@ -41,33 +41,33 @@ const Dashboard = () => {
         <>
         <DailyQuoteCard uid={user.uid} />
 
-        <div className="bottom-boxes">
-          <div className="left-container">
-            <h2>Your Streak</h2>
-            <div className="streak-display">
-                <span className="streak-number">{streak}</span>
-                <span className="streak-label"> days</span>
-              </div>
-            <button 
-              className="habits-btn"
-              onClick={() => navigate('/tasks')}>
+          <DailyQuoteCard uid={user.uid} />
 
-              view your tasks
-            </button>
+          <div className="bottom-boxes">
+            <div className="left-container">
+              <StreakCard />
+              <button 
+                className="habits-btn"
+                onClick={() => navigate('/tasks')}
+              >
+                view your tasks
+              </button>
+            </div>
+
+            <div className="right-container">
+              <h2>Your Plants</h2>
+              <button 
+                className="plants-btn"
+                onClick={() => navigate('/plant')}
+              >
+                view your plant
+              </button>
+            </div>
+
           </div>
 
-          <div className="right-container">
-            <h2>Your Plants</h2>
-            <button 
-              className="plants-btn"
-              onClick={() => navigate('/plant')}>
-
-              view your plants
-            </button>
-          </div>
-        </div>
-      </>
-      
+          
+        </>
       ) : (
         <p>Please log in to view your daily quote.</p>
       )}
