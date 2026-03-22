@@ -40,21 +40,24 @@ const Landing = () => {
 
           <div className="features-layout">
             <div className="feature-item fade-in-left">
-              <div className="glass-box" />
-              <h3 className="feature-name">Routine</h3>
-              <p className="feature-desc">Structure your day with intent.</p>
+              <div className="glass-box">
+                <h3 className="feature-name">Routine</h3>
+                <p className="feature-desc">Structure your day with intent.</p>
+              </div>
             </div>
 
             <div className="feature-item fade-in">
-              <div className="glass-box" />
-              <h3 className="feature-name">Healing</h3>
-              <p className="feature-desc">A space for reflection.</p>
+              <div className="glass-box">
+                <h3 className="feature-name">Healing</h3>
+                <p className="feature-desc">A space for reflection.</p>
+              </div>
             </div>
 
             <div className="feature-item fade-in-right">
-              <div className="glass-box" />
-              <h3 className="feature-name">Growth</h3>
-              <p className="feature-desc">Watch yourself flourish.</p>
+              <div className="glass-box">
+                <h3 className="feature-name">Growth</h3>
+                <p className="feature-desc">Watch yourself flourish.</p>
+              </div>
             </div>
           </div>
         </div>
