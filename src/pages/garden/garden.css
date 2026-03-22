@@ -98,6 +98,7 @@
     position: absolute;
     width: 150px;
     height: 50px;
+    left: -200px;
     background: white;
     border-radius: 50px;
     opacity: 0.8;
@@ -125,20 +126,20 @@
 }
 .cloud-1 {
     top: 100px;
-    animation: drift 25s linear infinite;
+    animation: cloud-drift 25s linear infinite;
 }
 .cloud-2{
     top: 220px;
-    animation: drift 35s linear infinite;
+    animation: dloud-drift 35s linear infinite;
     transform: scale(0.8);
     opacity: 0.6;
 }
 .cloud-3 {
     top: 150px;
-    animation: drift 45s linear infinite;
+    animation: cloud-drift 45s linear infinite;
     transform: scale(1.2);
 }
-@keyframes drift {
+@keyframes cloud-drift {
     from {
         left: -200px;
     }

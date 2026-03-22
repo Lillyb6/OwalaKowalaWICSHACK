@@ -58,9 +58,11 @@ body {
     cursor: pointer;
     font-size: 16px;
     margin-top: 10px;
+    transition: transform 0.2s ease;
 }
 
 .habits-btn:hover, .plants-btn:hover {
+    transform: scale(1.05);
     background-color: rgb(255,226,226);
     color: rgb(44, 110, 73);
 }
