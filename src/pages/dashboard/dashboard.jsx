@@ -31,19 +31,15 @@ const Dashboard = () => {
           <DailyQuoteCard uid={user.uid} />
 
           <div className="bottom-boxes">
-            <div className="streak-container">
+            <div className="left-container">
               <StreakCard />
-              <button className="habits-btn">
-                view your habits
-              </button>
+              <button className="habits-btn">view your habits</button>
             </div>
 
-            <div className="plants-container">
-              <h2>Your Plants</h2>
-              <button className="plants-btn">
-                view your plant
-              </button>
-            </div>
+          <div className="right-container">
+            <h2>Your Plants</h2>
+            <button className="plants-btn">view your plant</button>
+          </div>
 
           </div>
         </>

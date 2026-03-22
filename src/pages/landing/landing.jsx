@@ -48,8 +48,8 @@ const Landing = () => {
 
             <div className="feature-item fade-in">
               <div className="glass-box">
-                <h3 className="feature-name">Healing</h3>
-                <p className="feature-desc">A space for reflection.</p>
+                <h3 className="feature-name">Happiness</h3>
+                <p className="feature-desc">Track mood boosting habits.</p>
               </div>
             </div>
 
@@ -68,7 +68,7 @@ const Landing = () => {
             we believe in the power of <strong>'pouring into yourself'</strong>{' '}
             every single day. Our platform blends the calming rhythm of nature
             with modern routine tracking, creating a sanctuary where you can
-            practice healing, stay organized, and watch yourself flourish."
+            maintain self happiness, stay organized, and watch yourself flourish."
           </p>
         </div>
 
