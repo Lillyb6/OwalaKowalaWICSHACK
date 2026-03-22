@@ -22,16 +22,24 @@ export default function StreakCard() {
       if (currentUser) {
         const statsRef = doc(db, "users", currentUser.uid, "stats", "main");
 
-        unsubscribeStats = onSnapshot(statsRef, (snap) => {
-          if (snap.exists()) {
-            const data = snap.data();
-            setStreak(data.streakCount || 0);
-            setLongest(data.longestStreak || 0);
-          } else {
+        unsubscribeStats = onSnapshot(
+          statsRef,
+          (snap) => {
+            if (snap.exists()) {
+              const data = snap.data();
+              setStreak(data.streakCount || 0);
+              setLongest(data.longestStreak || 0);
+            } else {
+              setStreak(0);
+              setLongest(0);
+            }
+          },
+          (error) => {
+            console.error("StreakCard Firestore error:", error);
             setStreak(0);
             setLongest(0);
           }
-        });
+        );
       } else {
         setStreak(0);
         setLongest(0);
