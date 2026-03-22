@@ -1,18 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dynapuff&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: rgb(255,245,238);
+}
+
+.login-page {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(255,226,226);
+}
+
 .login-card {
-  background: white;
+  background-color: rgb(255,245,238);
   padding: 40px;
+  border: 3px solid rgb(255,179,179);
   border-radius: 15px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
   width: 100%;
   max-width: 400px;
+  text-align: center;
 }
 
-.login-input {
-  display: block;
+.login-title {
+  color: rgb(76, 149, 108);
+  font-size: 20pt;
+  margin-bottom: 20px;
+}
+
+.sprout-logo {
+  width: 38px;
+  height: 38px;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+.sprout-name {
+  font-family: 'Dynapuff', system-ui;
+}
+
+.google-btn {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.login-divider {
+  margin: 15px 0;
+  color: #888;
+  font-size: 0.8rem;
+}
+
+.login-username {
   width: 100%;
   padding: 12px;
-  margin: 10px 0;
-  border: 1px solid #ddd;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
   border-radius: 8px;
   box-sizing: border-box; 
+}
+
+.login-password {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.btn-main {
+  width: 30%;
+  padding: 12px;
+  background-color: rgb(44, 110, 73)
+}
+
+.btn-main:hover {
+  background-color: rgb(76, 149, 108);
 }

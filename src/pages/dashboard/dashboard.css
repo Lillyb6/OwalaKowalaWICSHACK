@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dynapuff&display=swap');
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: rgb(255,245,238);
+}
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+    background-color: rgb(255, 245, 238);
+    position: relative;
+}
+
+.bottom-boxes {
+    display: flex;
+    justify-content: center;
+    gap: 30px; 
+    margin-top: 30px;
+    width: 100%;
+    max-width: 1100px; 
+}
+
+.bottom-boxes h2 {
+    color: rgb(255, 226, 226);
+    margin-bottom: 10px;
+}
+
+.left-container, .middle-container, .right-container {
+    flex: 1;
+    background-color: rgb(76, 149, 108);
+    color: white;
+    text-align: center;
+    padding: 20px;
+    min-height: 150px;
+    border: 3px solid rgb(44, 110, 73);
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+
+
+.habits-btn, .plants-btn{
+    font-family: 'Poppins', sans-serif;
+    background-color: rgb(44, 110, 73);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+    transition: transform 0.2s ease;
+}
+
+.habits-btn:hover, .plants-btn:hover {
+    transform: scale(1.05);
+    background-color: rgb(255,226,226);
+    color: rgb(44, 110, 73);
+}

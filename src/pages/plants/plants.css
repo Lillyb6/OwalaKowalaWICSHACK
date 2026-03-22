@@ -1,0 +1,116 @@
+.plants-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+
+background: linear-gradient(
+        to top,
+        #adb6f7 0%,
+        #95a0f4 50%,
+        #7584fa 100%
+        );
+      background-attachment: fixed;
+}
+.plant-image {
+    width: 600px;
+    height: auto;
+    transform-origin: bottom;
+    transition: height 0.3s ease-in-out; 
+    z-index: 2;
+}
+
+.dirt-image {
+    width: 150px;
+    margin-top: -20px;
+    z-index: 1;
+    transition: height 0.3s ease-in-out; 
+}
+
+.grass-floor {
+    position: absolute;
+    bottom: 0;
+    width: 120%;
+    height: 150px;
+    background: #4c956c;
+    border-radius: 150% 150% 0 0 /20% 20% 0 0;
+}
+
+.ui-menu {
+    position: absolute;
+    bottom: 30px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 15px 30px;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+.ui-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ui-label {
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: #888;
+    margin-right: 5px;
+}
+
+.ui-divider {
+    width: 2px;
+    height: 30px;
+    background: #ddd;
+}
+
+.btn {
+    padding: 8px 16px;
+    background: white;
+    border: 2px solid transparent;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn.active {
+    border-color: #7584fa;
+    color: #7584fa;
+}
+
+.grow-btn {
+    background: #4c956c;
+    color: white;
+}
+
+.swatch {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 3px solid white;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.swatch.selected {
+    transform: scale(1.3);
+    border-color: #666;
+}
+
+.pink { background: #ffb7c5; }
+.blue { background: #add8e6; }
+.green { background: #90ee90; }
+.purple { background: #cbc3e3; }
+.yellow { background: #fff9ae; }
