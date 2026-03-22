@@ -37,7 +37,7 @@ body {
     color: rgb(255,226,226);
 }
 
-.habits-btn, .plants-btn {
+.habits-btn, .plants-btn{
     font-family: 'Poppins', sans-serif;
     background-color: rgb(44, 110, 73);
     color: white;
