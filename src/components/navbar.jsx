@@ -2,17 +2,77 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { auth } from '../config/firebase'; 
 import { onAuthStateChanged, signOut } from 'firebase/auth';
+import logoIcon from '../assets/sprout-icon.png';
 
 const Navbar = () => {
   const [user, setUser] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      if (!currentUser) setIsSidebarOpen(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      setIsSidebarOpen(false);
+      navigate('/');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const toggleSidebar = () => {
+    if (user) {
+      setIsSidebarOpen(!isSidebarOpen);
+    }
+  };
 
   const navStyle = {
     display: 'flex', 
-    justifyContent: 'center', 
-    gap: '15px', 
-    padding: '15px', 
-    background: '#2d5a27'
+    justifyContent: 'space-between', 
+    alignItems: 'center',
+    padding: '0 30px', 
+    background: '#2d5a27',
+    color: 'white',
+    height: '70px',
+    position: 'sticky',
+    top: 0,
+    zIndex: 1000
+  };
+
+  const sidebarStyle = {
+    position: 'fixed',
+    top: 0,
+    left: isSidebarOpen && user ? '0' : '-320px', 
+    width: '280px',
+    height: '100vh',
+    background: 'white',
+    boxShadow: '4px 0 15px rgba(0,0,0,0.3)',
+    transition: '0.4s cubic-bezier(0.4, 0, 0.2, 1)', 
+    zIndex: 2000, 
+    padding: '80px 20px 20px 20px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px'
+  };
+
+  const overlayStyle = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100vw',
+    height: '100vh',
+    background: 'rgba(0,0,0,0.5)',
+    opacity: isSidebarOpen && user ? 1 : 0,
+    visibility: isSidebarOpen && user ? 'visible' : 'hidden',
+    transition: 'opacity 0.4s ease',
+    zIndex: 1500
   };
 
   const getLinkStyle = ({ isActive }) => ({
@@ -24,43 +84,81 @@ const Navbar = () => {
     transition: '0.3s'
   });
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
-    return () => unsubscribe();
-  }, []);
-
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      navigate('/');
-    } catch (err) {
-      console.error(err);
-    }
+  const sideLinkStyle = {
+    color: '#2d5a27',
+    textDecoration: 'none',
+    fontSize: '1.1rem',
+    padding: '10px',
+    borderRadius: '8px'
   };
 
   return (
-    <nav style={navStyle}> 
-      <NavLink style={getLinkStyle} to="/" end>Home</NavLink>
-      
-      {!user ? (
-        <NavLink style={getLinkStyle} to="/login">Login</NavLink>
-      ) : (
-        <>
-          <NavLink style={getLinkStyle} to="/dashboard">Dashboard</NavLink>
-          <NavLink style={getLinkStyle} to="/tasks">Tasks</NavLink>
-          <NavLink style={getLinkStyle} to="/plant">Plant</NavLink>
-          <NavLink style={getLinkStyle} to="/garden">Garden</NavLink>
-          <button 
-            onClick={handleLogout} 
-            style={{ background: 'none', border: '1px solid white', color: 'white', cursor: 'pointer', borderRadius: '20px', marginLeft: '10px', padding: '5px 15px' }}
-          >
-            Logout
-          </button>
-        </>
-      )}
-    </nav>
+    <>
+      <nav style={navStyle}> 
+        <div 
+          style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: user ? 'pointer' : 'default' }} 
+          onClick={toggleSidebar}
+        >
+          <img 
+            src={logoIcon} 
+            alt="Sprouts Logo" 
+            style={{ 
+              width: '50px',       
+              height: '50px',      
+              objectFit: 'contain',
+              display: 'block'     
+            }} 
+           />
+          <span style={{ 
+            fontFamily: '"DynaPuff", system-ui', 
+            fontSize: '1.6rem', 
+            color: 'white',
+            marginLeft: '8px',
+            fontWeight: 600 
+          }}>
+           sprout.com
+          </span>
+        </div>
+
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <NavLink style={getLinkStyle} to="/" end>Home</NavLink>
+          {!user ? (
+            <NavLink style={getLinkStyle} to="/login">Login</NavLink>
+          ) : (
+            <>
+              <NavLink style={getLinkStyle} to="/dashboard">Dashboard</NavLink>
+              <NavLink style={getLinkStyle} to="/tasks">Tasks</NavLink>
+            </>
+          )}
+        </div>
+      </nav>
+
+      <div style={overlayStyle} onClick={toggleSidebar} />
+
+      <div style={sidebarStyle}>
+        <button 
+          onClick={toggleSidebar} 
+          style={{ position: 'absolute', top: '20px', right: '20px', border: 'none', background: 'none', fontSize: '1.5rem', cursor: 'pointer' }}
+        >
+          ✕
+        </button>
+        
+        <h3 style={{ color: '#2d5a27', marginBottom: '10px' }}>Account Menu</h3>
+        <NavLink to="/dashboard" style={sideLinkStyle} onClick={toggleSidebar}>Dashboard</NavLink>
+        <NavLink to="/tasks" style={sideLinkStyle} onClick={toggleSidebar}>Tasks</NavLink>
+        <NavLink to="/plant" style={sideLinkStyle} onClick={toggleSidebar}>Plant Health</NavLink>
+        <NavLink to="/garden" style={sideLinkStyle} onClick={toggleSidebar}>Garden Map</NavLink>
+        
+        <hr style={{ border: '0.5px solid #eee', margin: '10px 0' }} />
+        
+        <button 
+          onClick={handleLogout} 
+          style={{ background: '#ff4d4d', color: 'white', border: 'none', padding: '12px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
+        >
+          Log Out
+        </button>
+      </div>
+    </>
   );
 };
 

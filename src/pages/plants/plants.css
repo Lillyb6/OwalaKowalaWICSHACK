@@ -1,0 +1,39 @@
+.plants-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+
+background: linear-gradient(
+        to top,
+        #adb6f7 0%,
+        #95a0f4 50%,
+        #7584fa 100%
+        );
+      background-attachment: fixed;
+}
+.plant-image {
+    max-width: 100%;
+    transition: height 0.3s ease-in-out; /* Added 's' to 0.3 */
+    z-index: 2;
+}
+
+.dirt-image {
+    width: 150px;
+    margin-top: -20px;
+    z-index: 1;
+    transition: height 0.3s ease-in-out; /* Added 's' to 0.3 */
+}
+
+.grass-floor {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 150px;
+    background: #4c956c;
+    border-radius: 150% 150% 0 0 /20% 20% 0 0;
+}
